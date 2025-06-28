@@ -1,0 +1,214 @@
+<!-- Estructura principal -->
+<div class="main-container">
+  <!-- Header del estudiante -->
+  <header class="student-header">
+    <div class="student-info">
+      <h1>Miguel Ángel Rodríguez Sánchez</h1>
+      <div class="student-details">
+        <span>Código: 20202456</span>
+        <span>Ciclo: 2023-II</span>
+        <span>Ingeniería de Software</span>
+      </div>
+    </div>
+    <!-- Navegación principal -->
+    <nav class="main-nav">
+      <a href="#" class="nav-link active">Dashboard</a>
+      <a href="#" class="nav-link">Proyección de Cursos</a>
+      <a href="#" class="nav-link">Horario</a>
+      <a href="#" class="nav-link">Historial Académico</a>
+      <a href="#" class="nav-link">Plan de Estudios</a>
+      <a href="#" class="nav-link">Perfil</a>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="projection-container">
+    <!-- Cabecera de sección -->
+    <div class="section-header">
+      <h2>Proyección de Matrícula - Ciclo 2023-II</h2>
+      <div class="total-credits">
+        Total de créditos seleccionados: {{ getTotalCredits() }}
+      </div>
+    </div>
+
+    <!-- Tabla de cursos disponibles -->
+    <div class="table-container">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Curso</th>
+              <th>Créditos</th>
+              <th>Docente</th>
+              <th>Horario</th>
+              <th>Modalidad</th>
+              <th>Turno</th>
+              <th>Campus</th>
+              <th>Vacantes</th>
+              <th>Aula</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let course of availableCourses">
+              <td class="code-column" data-label="Código">{{ course.code }}</td>
+              <td class="name-column" data-label="Curso">
+                <div class="course-name">
+                  {{ course.name }}
+                  <div class="prerequisites">
+                    <strong>Prerrequisitos:</strong>
+                    {{ course.prerequisites.join(", ") }}
+                  </div>
+                </div>
+              </td>
+              <td class="credits-column" data-label="Créditos">
+                {{ course.credits }}
+              </td>
+              <td class="teacher-column" data-label="Docente">
+                <button
+                  type="button"
+                  class="teacher-button"
+                  (click)="showTeacherInfo(course.teacher)"
+                >
+                  {{ course.teacher.name }}
+                </button>
+              </td>
+              <td class="schedule-column" data-label="Horario">
+                {{ course.schedule }}
+              </td>
+              <td class="modality-column" data-label="Modalidad">
+                <span
+                  class="modality-badge"
+                  [ngClass]="course.modality.toLowerCase()"
+                >
+                  {{ course.modality }}
+                </span>
+              </td>
+              <td class="shift-column" data-label="Turno">
+                {{ course.shift }}
+              </td>
+              <td class="campus-column" data-label="Campus">
+                {{ course.campus }}
+              </td>
+              <td class="slots-column" data-label="Vacantes">
+                {{ course.slots }}
+              </td>
+              <td class="classroom-column" data-label="Aula">
+                {{ course.classroom }}
+              </td>
+              <td class="action-column" data-label="Acción">
+                <button
+                  class="add-button"
+                  (click)="addCourse(course)"
+                  [disabled]="isCourseSelected(course)"
+                >
+                  <i class="fas fa-plus"></i> Agregar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Cursos seleccionados -->
+    <div class="selected-courses" *ngIf="selectedCourses.length > 0">
+      <h3>Cursos Seleccionados</h3>
+      <div class="selected-courses-list">
+        <div class="course-card" *ngFor="let course of selectedCourses">
+          <div class="course-info">
+            <h4>{{ course.name }}</h4>
+            <p><strong>Código:</strong> {{ course.code }}</p>
+            <p><strong>Créditos:</strong> {{ course.credits }}</p>
+            <p><strong>Docente:</strong> {{ course.teacher.name }}</p>
+            <p><strong>Horario:</strong> {{ course.schedule }}</p>
+          </div>
+          <button class="remove-button" (click)="removeCourse(course)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de información del docente -->
+  <div
+    class="teacher-popup-overlay"
+    *ngIf="selectedTeacher"
+    (click)="closeTeacherInfo($event)"
+  >
+    <div class="teacher-popup">
+      <button
+        type="button"
+        class="close-button"
+        (click)="closeTeacherInfo($event)"
+      >
+        ×
+      </button>
+      <div class="popup-header">
+        <img
+          class="teacher-photo"
+          src="https://via.placeholder.com/60x60"
+          alt="Foto del docente"
+        />
+        <div class="teacher-header-info">
+          <h3>{{ selectedTeacher.fullName }}</h3>
+          <div class="teacher-degree">{{ selectedTeacher.degree }}</div>
+        </div>
+      </div>
+      <div class="popup-content">
+        <div class="info-group">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <strong>Correo Electrónico</strong>
+            <p>{{ selectedTeacher.email }}</p>
+          </div>
+        </div>
+        <div class="info-group">
+          <i class="fas fa-phone"></i>
+          <div>
+            <strong>Teléfono</strong>
+            <p>{{ selectedTeacher.phone }}</p>
+          </div>
+        </div>
+        <div class="info-group">
+          <i class="fas fa-building"></i>
+          <div>
+            <strong>Departamento</strong>
+            <p>{{ selectedTeacher.department }}</p>
+          </div>
+        </div>
+        <div class="info-group">
+          <i class="fas fa-door-open"></i>
+          <div>
+            <strong>Oficina</strong>
+            <p>{{ selectedTeacher.office }}</p>
+          </div>
+        </div>
+        <div class="info-group">
+          <i class="fas fa-graduation-cap"></i>
+          <div>
+            <strong>Especialización</strong>
+            <p>{{ selectedTeacher.specialization }}</p>
+          </div>
+        </div>
+        <div class="info-group">
+          <i class="fas fa-clock"></i>
+          <div>
+            <strong>Horario de Atención</strong>
+            <p>{{ selectedTeacher.officeHours }}</p>
+          </div>
+        </div>
+        <div class="research-areas">
+          <strong>Áreas de Investigación</strong>
+          <ul>
+            <li *ngFor="let area of selectedTeacher.researchAreas">
+              {{ area }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,374 @@
+{
+  "info": {
+    "_postman_id": "67b30d1c-9b49-411b-9c64-9bd03e89666f",
+    "name": "SameBanner API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17434497"
+  },
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "Iniciar Sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "michael.vairo@centroeducativo.edu",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "estudiante123",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Usuario Actual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cerrar Sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/auth/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cursos",
+      "item": [
+        {
+          "name": "Obtener Todos los Cursos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/courses",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "courses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Cursos Disponibles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/courses?carreraId=1&ciclo=01",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "courses"],
+              "query": [
+                {
+                  "key": "carreraId",
+                  "value": "1"
+                },
+                {
+                  "key": "ciclo",
+                  "value": "01"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Curso por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/courses/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "courses", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Curso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"codigoCurso\": \"ISW-C01-NEW\",\n    \"nombre\": \"Nuevo Curso\",\n    \"descripcion\": \"Descripción del nuevo curso\",\n    \"creditos\": 4,\n    \"ciclo\": \"01\",\n    \"carreraId\": 1,\n    \"areaConocimiento\": \"Programación\",\n    \"modalidad\": \"presencial\",\n    \"sede\": \"Campus Central\",\n    \"turno\": \"mañana\",\n    \"vacantesTotales\": 30,\n    \"vacantesDisponibles\": 30,\n    \"docenteId\": 1,\n    \"horarioDias\": \"LUN-MIE\",\n    \"horaInicio\": \"08:00\",\n    \"horaFin\": \"10:00\",\n    \"aula\": \"A-101\",\n    \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/courses",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "courses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Curso",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"codigoCurso\": \"ISW-C01-01\",\n    \"nombre\": \"Curso Actualizado\",\n    \"descripcion\": \"Descripción actualizada\",\n    \"creditos\": 4,\n    \"ciclo\": \"01\",\n    \"carreraId\": 1,\n    \"areaConocimiento\": \"Programación\",\n    \"modalidad\": \"presencial\",\n    \"sede\": \"Campus Central\",\n    \"turno\": \"mañana\",\n    \"vacantesTotales\": 30,\n    \"vacantesDisponibles\": 25,\n    \"docenteId\": 1,\n    \"horarioDias\": \"LUN-MIE\",\n    \"horaInicio\": \"08:00\",\n    \"horaFin\": \"10:00\",\n    \"aula\": \"A-101\",\n    \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/courses/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "courses", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Curso",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/courses/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "courses", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Proyecciones de Estudiantes",
+      "item": [
+        {
+          "name": "Obtener Proyección del Estudiante",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/student/projections",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "student", "projections"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Proyección de Estudiante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"cicloProyectado\": \"Ciclo_02\",\n    \"codigosCursos\": [\"ISW-C02-01\", \"ISW-C02-02\", \"ISW-C02-03\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/student/projections",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "student", "projections"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Carreras",
+      "item": [
+        {
+          "name": "Obtener Carrera por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/carreras/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "carreras", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Todas las Carreras",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/carreras",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "carreras"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Docentes",
+      "item": [
+        {
+          "name": "Obtener Docente por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/teachers/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "teachers", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Todos los Docentes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/teachers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "teachers"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
