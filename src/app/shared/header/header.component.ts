@@ -294,15 +294,15 @@ export class HeaderComponent implements OnInit {
 
           if (!this.isAdmin && user) {
             this.studentName = `${user.nombre} ${user.apellido}`;
-            return this.careerService.getCarrera(user.carrera_id).pipe(
+            return this.careerService.getCarrera(user.carreraId).pipe(
               switchMap((carrera) => {
-                const cicloFormateado = this.formatCiclo(user?.ciclo_actual);
+                const cicloFormateado = this.formatCiclo(user?.cicloActual);
                 this.careerInfo = `${carrera.nombre} - ${cicloFormateado}`;
                 return of(null);
               }),
               catchError((error) => {
                 console.error('Error al cargar la carrera:', error);
-                const cicloFormateado = this.formatCiclo(user?.ciclo_actual);
+                const cicloFormateado = this.formatCiclo(user?.cicloActual);
                 this.careerInfo = `${cicloFormateado}`;
                 return of(null);
               })

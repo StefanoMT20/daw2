@@ -15,9 +15,9 @@ interface User {
   email: string;
   nombre: string;
   apellido: string;
-  codigo_estudiante: string;
-  carrera_id: number;
-  ciclo_actual: string;
+  codigoEstudiante: string;
+  carreraId: number;
+  cicloActual: string;
   rol: string;
 }
 

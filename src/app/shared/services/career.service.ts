@@ -27,6 +27,7 @@ export interface Career {
 })
 export class CareerService {
   private apiUrl = `${environment.apiUrl}/carreras`;
+
   private carrerasMap = new Map<number, string>([
     [1, 'Ingeniería de Software'],
     [2, 'Psicología'],
@@ -55,7 +56,7 @@ export class CareerService {
     return this.http.get<Career>(
       `${this.apiUrl}/${id}`,
       {
-        ...this.authService.getAuthHeaders(),
+        headers: this.authService.getAuthHeaders(),
         withCredentials: true,
       }
     );
@@ -65,11 +66,11 @@ export class CareerService {
     return this.http
       .get<Career[]>(this.apiUrl, {
         headers: this.authService.getAuthHeaders(),
+        withCredentials: true,
       })
       .pipe(
         catchError((error) => {
           console.error('Error al obtener carreras:', error);
-          // Proporcionar datos de respaldo si falla la API
           const fallbackCareers: Career[] = [
             {
               id: 1,
@@ -103,5 +104,4 @@ export class CareerService {
         })
       );
   }
-
 }

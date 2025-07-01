@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, throwError } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../shared/services/auth.service';
 
 export interface Course {
   code: string;
@@ -55,16 +57,15 @@ export interface CreateProjectionRequest {
 export class ProjectionService {
   private apiUrl = `${environment.apiUrl}/student/projections`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
   getProjection(): Observable<Projection | null> {
     return this.http
       .get<Projection>(this.apiUrl, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        headers: this.authService.getAuthHeaders(),
         observe: 'response',
       })
       .pipe(
@@ -74,12 +75,13 @@ export class ProjectionService {
             return null;
           }
           const projection = response.body;
+
           if (
             projection.proyeccionCursos &&
             projection.proyeccionCursos.length > 0
           ) {
             console.log('Proyección existente encontrada:', projection);
-            // Convertir los cursos del backend al formato del frontend
+
             const convertedProjection = {
               ...projection,
               proyeccionCursos: projection.proyeccionCursos.map((pc) => ({
@@ -90,7 +92,7 @@ export class ProjectionService {
                   credits: pc.curso.creditos,
                   teacher: pc.curso.docente
                     ? {
-                        id: pc.curso.docente.id.toString(),
+                        id: pc.curso.docente.id?.toString() || '',
                         nombre: pc.curso.docente.nombre || '',
                         apellido: pc.curso.docente.apellido || '',
                         email: pc.curso.docente.email || '',
@@ -136,9 +138,11 @@ export class ProjectionService {
                 },
               })),
             };
+
             console.log('Proyección convertida:', convertedProjection);
             return convertedProjection;
           }
+
           console.log('No se encontró proyección existente');
           return null;
         }),
@@ -172,11 +176,7 @@ export class ProjectionService {
 
     return this.http
       .post<Projection>(this.apiUrl, payload, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        headers: this.authService.getAuthHeaders(),
         observe: 'response',
       })
       .pipe(
@@ -190,31 +190,30 @@ export class ProjectionService {
         catchError((error) => {
           console.error('Error al crear la proyección:', error);
           if (error.status === 401) {
-            throw new Error('Usuario no autenticado');
+            return throwError(() => new Error('Usuario no autenticado'));
           } else if (error.status === 400) {
-            throw new Error(
-              'Datos de proyección inválidos: ' + error.error?.message
+            return throwError(() =>
+              new Error(
+                'Datos de proyección inválidos: ' + error.error?.message
+              )
             );
           } else {
-            throw new Error('Error del servidor: ' + error.message);
+            return throwError(() =>
+              new Error('Error del servidor: ' + error.message)
+            );
           }
         })
       );
   }
 
   private formatCiclo(ciclo: string): string {
-    // Si ya tiene el formato correcto, devolverlo
     if (/^Ciclo_\d{2}$/.test(ciclo)) {
       return ciclo;
     }
-
-    // Si es un número, formatearlo
     const num = parseInt(ciclo);
     if (!isNaN(num) && num >= 1 && num <= 10) {
       return `Ciclo_${String(num).padStart(2, '0')}`;
     }
-
-    // Si tiene otro formato, intentar extraer el número
     const match = ciclo.match(/\d+/);
     if (match) {
       const num = parseInt(match[0]);
@@ -222,7 +221,6 @@ export class ProjectionService {
         return `Ciclo_${String(num).padStart(2, '0')}`;
       }
     }
-
     throw new Error('Formato de ciclo inválido');
   }
 }

@@ -50,11 +50,11 @@ interface TeacherPopupInfo {
           </div>
           <div class="info-item">
             <strong>Código de alumno:</strong>
-            {{ currentStudent?.codigo_estudiante || '' }}
+            {{ currentStudent?.codigoEstudiante || '' }}
           </div>
           <div class="info-item">
             <strong>Ciclo a proyectar:</strong>
-            {{ formatCiclo(getNextCycle(currentStudent?.ciclo_actual)) }}
+            {{ formatCiclo(getNextCycle(currentStudent?.cicloActual)) }}
           </div>
           <div class="info-item">
             <strong>Carrera:</strong> {{ careerName }}
@@ -2646,10 +2646,10 @@ export class CourseProjectionComponent implements OnInit {
     this.authService.getCurrentUser().subscribe((user) => {
       if (user) {
         this.currentStudent = user;
-        this.selectedSemester = this.getNextCycle(user.ciclo_actual);
+        this.selectedSemester = this.getNextCycle(user.cicloActual);
 
         // Cargar la carrera
-        this.careerService.getCareerById(user.carrera_id).subscribe(
+        this.careerService.getCareerById(user.carreraId).subscribe(
           (career) => {
             if (career) {
               this.careerName = career.nombre;
@@ -2684,14 +2684,27 @@ export class CourseProjectionComponent implements OnInit {
     });
   }
 
-  getNextCycle(currentCycle: string): string {
-    const cycleNumber = parseInt(currentCycle.replace('Ciclo_', ''));
-    const nextNumber = cycleNumber + 1;
-    return nextNumber <= 10
-      ? `Ciclo_${String(nextNumber).padStart(2, '0')}`
-      : currentCycle;
-  }
+  getNextCycle(currentCycle?: string): string {
+    if (!currentCycle) {
+      console.warn('El ciclo actual es undefined o vacío');
+      return '';
+    }
 
+    const match = currentCycle.match(/\d+/);
+    if (!match) {
+      console.warn(`Formato inválido para ciclo: ${currentCycle}`);
+      return '';
+    }
+
+    const cycleNumber = parseInt(match[0], 10);
+    if (isNaN(cycleNumber)) {
+      console.warn(`No se pudo convertir ciclo a número: ${currentCycle}`);
+      return '';
+    }
+
+    const nextNumber = Math.min(cycleNumber + 1, 10);
+    return `Ciclo_${String(nextNumber).padStart(2, '0')}`;
+  }
   private loadProjectionCourses(projection: Projection) {
     console.log('Iniciando carga de proyección...', projection);
     this.hasExistingProjection = true;
@@ -2748,8 +2761,8 @@ export class CourseProjectionComponent implements OnInit {
     console.log('Cargando cursos disponibles...');
     this.courseService
       .getAvailableCourses(
-        user.carrera_id,
-        this.getNextCycle(user.ciclo_actual)
+        user.carreraId,
+        this.getNextCycle(user.cicloActual)
       )
       .subscribe(
         (courses) => {
@@ -3503,17 +3516,17 @@ export class CourseProjectionComponent implements OnInit {
 
   exportSchedule() {
     const filename = `horario_${
-      this.currentStudent?.codigo_estudiante || 'export'
+      this.currentStudent?.codigoEstudiante || 'export'
     }.txt`;
 
     // Información del estudiante
     let content = `${this.currentStudent?.nombre || ''} ${
       this.currentStudent?.apellido || ''
     }\n`;
-    content += `Código: ${this.currentStudent?.codigo_estudiante || ''}\n`;
+    content += `Código: ${this.currentStudent?.codigoEstudiante || ''}\n`;
     content += `Carrera: ${this.careerName}\n`;
     content += `Ciclo: ${this.formatCiclo(
-      this.currentStudent?.ciclo_actual
+      this.currentStudent?.cicloActual
     )}\n\n`;
 
     // Horario de clases
@@ -3575,12 +3588,12 @@ export class CourseProjectionComponent implements OnInit {
   getStudentInfo(): string {
     return `${this.currentStudent?.nombre || ''} ${
       this.currentStudent?.apellido || ''
-    } - ${this.currentStudent?.codigo_estudiante || ''}`;
+    } - ${this.currentStudent?.codigoEstudiante || ''}`;
   }
 
   getCareerInfo(): string {
     return `${this.careerName} - ${this.formatCiclo(
-      this.currentStudent?.ciclo_actual
+      this.currentStudent?.cicloActual
     )}`;
   }
 

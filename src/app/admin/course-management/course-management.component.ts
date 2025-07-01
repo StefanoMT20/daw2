@@ -217,125 +217,226 @@ interface Course {
           </div>
           <form (ngSubmit)="addCourse()" #courseForm="ngForm">
             <div class="form-row">
+              <!-- Código -->
               <div class="form-group">
                 <label>Código:</label>
                 <input
                   type="text"
-                  [(ngModel)]="newCourse.code"
                   name="code"
+                  [(ngModel)]="newCourse.code"
                   required
+                  maxlength="15"
+                  pattern="^[A-Za-z0-9\-]+$"
+                  #code="ngModel"
                 />
+                <div class="error" *ngIf="code.invalid && code.touched">
+                  <small *ngIf="code.errors?.['required']">Campo requerido.</small>
+                  <small *ngIf="code.errors?.['pattern']">
+                    Solo letras, números y guiones.
+                  </small>
+                  <small *ngIf="code.errors?.['maxlength']">
+                    Máx. 15 caracteres.
+                  </small>
+                </div>
               </div>
 
+              <!-- Nombre -->
               <div class="form-group">
                 <label>Nombre:</label>
                 <input
                   type="text"
-                  [(ngModel)]="newCourse.name"
                   name="name"
+                  [(ngModel)]="newCourse.name"
                   required
+                  maxlength="50"
+                  pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$"
+                  #name="ngModel"
                 />
+                <div class="error" *ngIf="name.invalid && name.touched">
+                  <small *ngIf="name.errors?.['required']">Campo requerido.</small>
+                  <small *ngIf="name.errors?.['pattern']">
+                    Solo letras, números y espacios. No se permiten caracteres especiales.
+                  </small>
+                  <small *ngIf="name.errors?.['maxlength']">
+                    Máx. 50 caracteres.
+                  </small>
+                </div>
               </div>
             </div>
 
             <div class="form-row">
+              <!-- Créditos -->
               <div class="form-group">
                 <label>Créditos:</label>
                 <input
                   type="number"
-                  [(ngModel)]="newCourse.credits"
                   name="credits"
+                  [(ngModel)]="newCourse.credits"
                   required
+                  min="1"
+                  max="10"
+                  #credits="ngModel"
                 />
+                <div class="error" *ngIf="credits.invalid && credits.touched">
+                  <small *ngIf="credits.errors?.['required']">Campo requerido.</small>
+                  <small *ngIf="credits.errors?.['min']">Mínimo 1 crédito.</small>
+                  <small *ngIf="credits.errors?.['max']">Máx. 10 créditos.</small>
+                </div>
               </div>
 
+              <!-- Docente -->
               <div class="form-group">
                 <label>Docente:</label>
                 <select
-                  [(ngModel)]="newCourse.teacherId"
                   name="teacherId"
+                  [(ngModel)]="newCourse.teacherId"
                   required
+                  #teacherId="ngModel"
                 >
                   <option value="">Seleccionar docente</option>
                   <option *ngFor="let teacher of teachers" [value]="teacher.id">
                     {{ teacher.nombre }}
                   </option>
                 </select>
+                <div class="error" *ngIf="teacherId.invalid && teacherId.touched">
+                  <small *ngIf="teacherId.errors?.['required']">Campo requerido.</small>
+                </div>
               </div>
             </div>
 
             <div class="form-row">
+              <!-- Carrera -->
               <div class="form-group">
                 <label>Carrera:</label>
                 <select
-                  [(ngModel)]="newCourse.careerId"
                   name="careerId"
+                  [(ngModel)]="newCourse.careerId"
                   required
+                  #careerId="ngModel"
                 >
+                  <option value="">Seleccionar carrera</option>
                   <option *ngFor="let career of careers" [value]="career.id">
                     {{ career.nombre }}
                   </option>
                 </select>
+                <div class="error" *ngIf="careerId.invalid && careerId.touched">
+                  <small *ngIf="careerId.errors?.['required']">Campo requerido.</small>
+                </div>
               </div>
 
+              <!-- Ciclo -->
               <div class="form-group">
                 <label>Ciclo:</label>
-                <select [(ngModel)]="newCourse.cycle" name="cycle" required>
+                <select
+                  name="cycle"
+                  [(ngModel)]="newCourse.cycle"
+                  required
+                  #cycle="ngModel"
+                >
+                  <option value="">Seleccionar ciclo</option>
                   <option *ngFor="let cycle of cycles" [value]="cycle.value">
                     {{ cycle.label }}
                   </option>
                 </select>
+                <div class="error" *ngIf="cycle.invalid && cycle.touched">
+                  <small *ngIf="cycle.errors?.['required']">Campo requerido.</small>
+                </div>
               </div>
             </div>
 
             <div class="form-row">
+              <!-- Horario -->
               <div class="form-group">
                 <label>Horario:</label>
                 <input
                   type="text"
-                  [(ngModel)]="newCourse.schedule"
                   name="schedule"
+                  [(ngModel)]="newCourse.schedule"
                   required
+                  maxlength="50"
+                  minlength="5"
+                  #schedule="ngModel"
                 />
+                <div class="error" *ngIf="schedule.invalid && schedule.touched">
+                  <small *ngIf="schedule.errors?.['required']">Campo requerido.</small>
+                  <small *ngIf="schedule.errors?.['minlength']">
+                    Debe tener al menos 5 caracteres.
+                  </small>
+                  <small *ngIf="schedule.errors?.['maxlength']">
+                    Máx. 50 caracteres.
+                  </small>
+                </div>
               </div>
 
+              <!-- Modalidad -->
               <div class="form-group">
                 <label>Modalidad:</label>
                 <select
-                  [(ngModel)]="newCourse.modality"
                   name="modality"
+                  [(ngModel)]="newCourse.modality"
                   required
+                  #modality="ngModel"
                 >
+                  <option value="">Seleccionar modalidad</option>
                   <option value="Presencial">Presencial</option>
                   <option value="Virtual">Virtual</option>
                 </select>
+                <div class="error" *ngIf="modality.invalid && modality.touched">
+                  <small *ngIf="modality.errors?.['required']">Campo requerido.</small>
+                </div>
               </div>
             </div>
 
             <div class="form-row">
+              <!-- Vacantes -->
               <div class="form-group">
                 <label>Vacantes:</label>
                 <input
                   type="number"
-                  [(ngModel)]="newCourse.slots"
                   name="slots"
+                  [(ngModel)]="newCourse.slots"
                   required
+                  min="1"
+                  max="300"
+                  #slots="ngModel"
                 />
+                <div class="error" *ngIf="slots.invalid && slots.touched">
+                  <small *ngIf="slots.errors?.['required']">Campo requerido.</small>
+                  <small *ngIf="slots.errors?.['min']">Debe ser al menos 1.</small>
+                  <small *ngIf="slots.errors?.['max']">Máx. 300 vacantes.</small>
+                </div>
               </div>
 
+              <!-- Aula -->
               <div class="form-group">
                 <label>Aula:</label>
                 <input
                   type="text"
-                  [(ngModel)]="newCourse.classroom"
                   name="classroom"
+                  [(ngModel)]="newCourse.classroom"
                   required
+                  maxlength="20"
+                  pattern="^[A-Za-z0-9\- ]+$"
+                  #classroom="ngModel"
                 />
+                <div class="error" *ngIf="classroom.invalid && classroom.touched">
+                  <small *ngIf="classroom.errors?.['required']">Campo requerido.</small>
+                  <small *ngIf="classroom.errors?.['pattern']">
+                    Solo letras, números, guiones y espacios.
+                  </small>
+                  <small *ngIf="classroom.errors?.['maxlength']">
+                    Máx. 20 caracteres.
+                  </small>
+                </div>
               </div>
             </div>
 
             <div class="modal-actions">
-              <button type="submit" class="submit-button">
+              <button
+                type="submit"
+                class="submit-button"
+                [disabled]="courseForm.invalid"
+              >
                 {{
                   newCourse.code && newCourse.name ? 'Actualizar' : 'Guardar'
                 }}
@@ -349,6 +450,8 @@ interface Course {
               </button>
             </div>
           </form>
+
+
         </div>
       </div>
       }
